@@ -21,13 +21,13 @@
  *   THE SOFTWARE.
  *
  */
-package com.owncloud.android.lib.test_project.test;
+package com.joshuaglenlee.ownclient.lib.test_project.test;
 
-import com.owncloud.android.lib.common.OwnCloudClientManager;
-import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
-import com.owncloud.android.lib.common.SingleSessionManager;
-import com.owncloud.android.lib.common.OwnCloudClientManagerFactory.Policy;
-import com.owncloud.android.lib.common.SimpleFactoryManager;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientManager;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientManagerFactory;
+import com.joshuaglenlee.ownclient.lib.common.SingleSessionManager;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientManagerFactory.Policy;
+import com.joshuaglenlee.ownclient.lib.common.SimpleFactoryManager;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;

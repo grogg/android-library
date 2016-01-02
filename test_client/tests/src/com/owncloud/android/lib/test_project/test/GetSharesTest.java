@@ -22,14 +22,14 @@
  *
  */
 
-package com.owncloud.android.lib.test_project.test;
+package com.joshuaglenlee.ownclient.lib.test_project.test;
 
 import java.io.File;
 
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
-import com.owncloud.android.lib.resources.shares.ShareType;
-import com.owncloud.android.lib.test_project.TestActivity;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
+import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
+import com.joshuaglenlee.ownclient.lib.test_project.TestActivity;
 
 /** 
  * Class to test Get Shares Operation
