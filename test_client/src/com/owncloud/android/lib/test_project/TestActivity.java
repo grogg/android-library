@@ -22,7 +22,7 @@
  *
  */
 
-package com.owncloud.android.lib.test_project;
+package com.joshuaglenlee.ownclient.lib.test_project;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,23 +41,23 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.OwnCloudClientFactory;
-import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
-import com.owncloud.android.lib.common.network.NetworkUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.ChunkedUploadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.CreateRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.RenameRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.UploadRemoteFileOperation;
-import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
-import com.owncloud.android.lib.resources.shares.GetRemoteSharesOperation;
-import com.owncloud.android.lib.resources.shares.RemoveRemoteShareOperation;
-import com.owncloud.android.lib.resources.shares.ShareType;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientFactory;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
+import com.joshuaglenlee.ownclient.lib.common.network.NetworkUtils;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.resources.files.ChunkedUploadRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.CreateRemoteFolderOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.DownloadRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.ReadRemoteFolderOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.RemoteFile;
+import com.joshuaglenlee.ownclient.lib.resources.files.RemoveRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.RenameRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.UploadRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.shares.CreateRemoteShareOperation;
+import com.joshuaglenlee.ownclient.lib.resources.shares.GetRemoteSharesOperation;
+import com.joshuaglenlee.ownclient.lib.resources.shares.RemoveRemoteShareOperation;
+import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
 
 /**
  * Activity to test OC framework

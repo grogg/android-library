@@ -22,7 +22,7 @@
  *
  */
 
-package com.owncloud.android.lib.sampleclient;
+package com.joshuaglenlee.ownclient.lib.sampleclient;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,19 +32,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.owncloud.android.lib.common.network.OnDatatransferProgressListener;
-import com.owncloud.android.lib.common.OwnCloudClientFactory;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
-import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
-import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.UploadRemoteFileOperation;
-import com.owncloud.android.lib.resources.files.FileUtils;
+import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressListener;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientFactory;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
+import com.joshuaglenlee.ownclient.lib.common.operations.OnRemoteOperationListener;
+import com.joshuaglenlee.ownclient.lib.resources.files.RemoteFile;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.resources.files.DownloadRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.ReadRemoteFolderOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.RemoveRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.UploadRemoteFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.files.FileUtils;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
