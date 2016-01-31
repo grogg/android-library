@@ -37,7 +37,7 @@ env:
 addons:
   coverity_scan:
     project:
-      name: owncloud/android-library
+      name: ownclient/android-library
       description: Build submitted via Travis CI
     notification_email: lukas@owncloud.com
     build_command_prepend: gradle clean

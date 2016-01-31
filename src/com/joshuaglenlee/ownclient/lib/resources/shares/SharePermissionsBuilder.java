@@ -23,7 +23,7 @@
  *
  */
 
-package com.owncloud.android.lib.resources.shares;
+package com.joshuaglenlee.ownclient.lib.resources.shares;
 
 
 /**
