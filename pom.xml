@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.owncloud.android</groupId>
-    <artifactId>owncloud-android-library</artifactId>
+    <groupId>com.joshuaglenlee.ownclient</groupId>
+    <artifactId>joshuaglenlee-ownclient-library</artifactId>
     <version>${owncloud.version}</version>
     <packaging>jar</packaging>
-    <name>owncloud-android-library for Owncloud Android</name>
+    <name>joshuaglenlee-ownclient-library for Owncloud Android</name>
 
     <properties>
         <owncloud.version>1.5.1-SNAPSHOT</owncloud.version>
@@ -18,7 +18,7 @@
         <google.android-api>19</google.android-api>
     </properties>
 
-    <description>owncloud-android-library for Owncloud for Android</description>
+    <description>joshuaglenlee-ownclient-library for Owncloud for Android</description>
     
     <dependencies>
 

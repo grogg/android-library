@@ -22,13 +22,13 @@
  *
  */
 
-package com.owncloud.android.lib.test_project.test;
+package com.joshuaglenlee.ownclient.lib.test_project.test;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.test_project.R;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.test_project.R;
 
 public class Utils {
 
