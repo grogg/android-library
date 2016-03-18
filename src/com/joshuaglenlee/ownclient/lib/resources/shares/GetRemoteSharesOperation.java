@@ -26,8 +26,8 @@
 
 package com.joshuaglenlee.ownclient.lib.resources.shares;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.http.HttpStatus;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;

@@ -30,8 +30,8 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.http.HttpStatus;
 
 /** 
  * Get the data about a Share resource, known its remote ID.

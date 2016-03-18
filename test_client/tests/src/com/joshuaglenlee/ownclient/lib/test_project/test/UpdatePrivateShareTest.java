@@ -28,7 +28,6 @@ package com.joshuaglenlee.ownclient.lib.test_project.test;
 
 import java.io.File;
 import java.security.GeneralSecurityException;
-import java.util.Calendar;
 
 import junit.framework.AssertionFailedError;
 
@@ -207,8 +206,8 @@ public class UpdatePrivateShareTest extends RemoteTest {
 				UpdateRemoteShareOperation updateNoShare = new UpdateRemoteShareOperation(
 						mFileShare.getRemoteId()
 				);
-				updateShare.setPermissions(OCShare.READ_PERMISSION_FLAG);	// minimum permissions
-				result = updateShare.execute(mClient);
+				updateNoShare.setPermissions(OCShare.READ_PERMISSION_FLAG);	// minimum permissions
+				result = updateNoShare.execute(mClient);
 				assertFalse(result.isSuccess());
 			}
 				

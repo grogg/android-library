@@ -26,10 +26,18 @@ package com.joshuaglenlee.ownclient.lib.test_project.test;
 
 import java.io.File;
 
+<<<<<<< HEAD:test_client/tests/src/com/joshuaglenlee/ownclient/lib/test_project/test/CreateShareTest.java
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
 import com.joshuaglenlee.ownclient.lib.test_project.TestActivity;
+=======
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult.ResultCode;
+import com.owncloud.android.lib.resources.shares.ShareType;
+import com.owncloud.android.lib.test_project.R;
+import com.owncloud.android.lib.test_project.TestActivity;
+>>>>>>> cf3baa6cd53a30bbfe61fda6c9a29c69269d883a:test_client/tests/src/com/owncloud/android/lib/test_project/test/CreateShareTest.java
 
 /**
  * Test Create Share: the server must support SHARE API
@@ -47,6 +55,7 @@ public class CreateShareTest extends RemoteTest {
 	private TestActivity mActivity;
 	private String mFullPath2FileToShare;
 	private String mFullPath2NonExistentFile;
+	private String mRemoteServer;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -55,6 +64,7 @@ public class CreateShareTest extends RemoteTest {
 	    mActivity = getActivity();
 	    mFullPath2FileToShare = mBaseFolderPath + FILE_TO_SHARE;
 	    mFullPath2NonExistentFile = mBaseFolderPath + NON_EXISTENT_FILE;
+	    mRemoteServer = getActivity().getString(R.string.server_base_url_2);
 	    		
 		File textFile = mActivity.extractAsset(TestActivity.ASSETS__TEXT_FILE_NAME);
 		RemoteOperationResult result = mActivity.uploadFile(
@@ -202,6 +212,82 @@ public class CreateShareTest extends RemoteTest {
 				mFullPath2NonExistentFile, 
 				ShareType.GROUP, 
 				"admin", 
+				false, 
+				"", 
+				31);
+		assertFalse(result.isSuccess());
+		assertEquals(
+				RemoteOperationResult.ResultCode.SHARE_NOT_FOUND, 
+				result.getCode()
+		);
+		assertTrue(		// error message from server as part of the result
+				result.getData().size() == 1 && 
+				result.getData().get(0) instanceof String
+		);
+		
+	}
+	
+	/**
+	 * Test creation of federated shares with remote users
+	 */
+	public void testCreateFederatedShareWithUser() {
+		
+		String remoteDomain = mRemoteServer.split("//")[1];
+		
+		/// Successful cases
+		RemoteOperationResult result = mActivity.createShare(
+				mFullPath2FileToShare, 
+				ShareType.FEDERATED, 
+				"admin@" + remoteDomain, 
+				false, 
+				"", 
+				1);
+		assertTrue(result.isSuccess());
+		
+		
+		/// Failed cases
+		
+		// sharee doesn't exist in an existing remote server
+		result = mActivity.createShare(
+				mFullPath2FileToShare, 
+				ShareType.FEDERATED, 
+				"no_exist@" + remoteDomain, 
+				false, 
+				"", 
+				31);
+		assertFalse(result.isSuccess());
+		assertEquals(
+				RemoteOperationResult.ResultCode.SHARE_FORBIDDEN, 
+				result.getCode()
+		);
+		assertTrue(		// error message from server as part of the result
+				result.getData().size() == 1 && 
+				result.getData().get(0) instanceof String
+		);
+		
+		// remote server doesn't exist
+		result = mActivity.createShare(
+				mFullPath2FileToShare,
+				ShareType.FEDERATED,
+				"no_exist",
+				false,
+				"",
+				31);
+		assertFalse(result.isSuccess());
+		assertEquals(
+				RemoteOperationResult.ResultCode.SHARE_WRONG_PARAMETER,
+				result.getCode()
+		);
+		assertTrue(		// error message from server as part of the result
+				result.getData().size() == 1 &&
+				result.getData().get(0) instanceof String
+		);
+		
+		// file doesn't exist
+		result = mActivity.createShare(
+				mFullPath2NonExistentFile, 
+				ShareType.FEDERATED, 
+				"admin@" + remoteDomain, 
 				false, 
 				"", 
 				31);

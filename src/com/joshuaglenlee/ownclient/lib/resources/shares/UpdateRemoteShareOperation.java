@@ -33,9 +33,9 @@ package com.joshuaglenlee.ownclient.lib.resources.shares;
         import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
         import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
+        import org.apache.commons.httpclient.HttpStatus;
         import org.apache.commons.httpclient.methods.PutMethod;
         import org.apache.commons.httpclient.methods.StringRequestEntity;
-        import org.apache.http.HttpStatus;
 
         import java.text.DateFormat;
         import java.text.SimpleDateFormat;

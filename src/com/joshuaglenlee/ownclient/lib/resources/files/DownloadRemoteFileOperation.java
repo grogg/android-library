@@ -36,8 +36,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.http.HttpStatus;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressListener;
