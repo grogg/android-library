@@ -26,6 +26,8 @@ package com.joshuaglenlee.ownclient.lib.common;
 
 public class OwnCloudCredentialsFactory {
 
+	public static final String CREDENTIAL_CHARSET = "UTF-8";
+
 	private static OwnCloudAnonymousCredentials sAnonymousCredentials;
 
 	public static OwnCloudCredentials newBasicCredentials(String username, String password) {
