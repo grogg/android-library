@@ -1,5 +1,5 @@
 /* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -44,6 +44,7 @@ import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientFactory;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.common.network.NetworkUtils;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.resources.files.ChunkedUploadRemoteFileOperation;
 import com.joshuaglenlee.ownclient.lib.resources.files.CreateRemoteFolderOperation;
@@ -57,6 +58,8 @@ import com.joshuaglenlee.ownclient.lib.resources.shares.CreateRemoteShareOperati
 import com.joshuaglenlee.ownclient.lib.resources.shares.GetRemoteSharesOperation;
 import com.joshuaglenlee.ownclient.lib.resources.shares.RemoveRemoteShareOperation;
 import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
+import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserQuotaOperation;
+import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserAvatarOperation;
 
 /**
  * Activity to test OC framework
@@ -246,9 +249,9 @@ public class TestActivity extends Activity {
 	public RemoteOperationResult uploadFile(
 			String storagePath, String remotePath, String mimeType
 			) {
+
 		return TestActivity.uploadFile(storagePath, remotePath, mimeType, mClient);
 	}
-	
 	
 	/** Access to the library method to Upload a File 
 	 * @param storagePath
@@ -261,14 +264,18 @@ public class TestActivity extends Activity {
 	public static RemoteOperationResult uploadFile(
 			String storagePath, String remotePath, String mimeType, OwnCloudClient client
 			) {
-		UploadRemoteFileOperation uploadOperation;
+
+        String fileLastModifTimestamp = getFileLastModifTimeStamp(storagePath);
+
+        UploadRemoteFileOperation uploadOperation;
+
 		if ((new File(storagePath)).length() > ChunkedUploadRemoteFileOperation.CHUNK_SIZE ) {
             uploadOperation = new ChunkedUploadRemoteFileOperation(
-            		storagePath, remotePath, mimeType
+            		storagePath, remotePath, mimeType, fileLastModifTimestamp
     		);
         } else {
             uploadOperation = new UploadRemoteFileOperation(
-            		storagePath, remotePath, mimeType
+            		storagePath, remotePath, mimeType, fileLastModifTimestamp
     		);
         }
 		
@@ -330,7 +337,17 @@ public class TestActivity extends Activity {
 		return result;
 		
 	}
-	
+
+    public RemoteOperationResult getQuota() {
+        GetRemoteUserQuotaOperation getUserQuotaOperation = new GetRemoteUserQuotaOperation();
+        return getUserQuotaOperation.execute(mClient);
+    }
+
+
+	public RemoteOperationResult getUserAvatar(int dimension, String etag) {
+		GetRemoteUserAvatarOperation getUserAvatarOperation = new GetRemoteUserAvatarOperation(dimension, etag);
+		return getUserAvatarOperation.execute(mClient);
+	}
 	
 	/**
 	 * Extracts file from AssetManager to cache folder.
@@ -368,5 +385,9 @@ public class TestActivity extends Activity {
 		return extractedFile;
 	}
 
-
+    private static String getFileLastModifTimeStamp (String storagePath) {
+        File file = new File(storagePath);
+        Long timeStampLong = file.lastModified()/1000;
+        return timeStampLong.toString();
+    }
 }

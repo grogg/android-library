@@ -1,5 +1,5 @@
 /* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -43,20 +43,25 @@ import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
 
 public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation {
-    
+
+    private static final int LAST_CHUNK_TIMEOUT = 900000; //15 mins.
+
     public static final long CHUNK_SIZE = 1024000;
     private static final String OC_CHUNKED_HEADER = "OC-Chunked";
     private static final String OC_CHUNK_SIZE_HEADER = "OC-Chunk-Size";
+    private static final String OC_CHUNK_X_OC_MTIME_HEADER = "X-OC-Mtime";
     private static final String TAG = ChunkedUploadRemoteFileOperation.class.getSimpleName();
 
-    public ChunkedUploadRemoteFileOperation(String storagePath, String remotePath, String mimeType){
-        super(storagePath, remotePath, mimeType);
+    public ChunkedUploadRemoteFileOperation(String storagePath, String remotePath, String mimeType,
+                                            String fileLastModifTimestamp){
+        super(storagePath, remotePath, mimeType, fileLastModifTimestamp);
     }
 
     public ChunkedUploadRemoteFileOperation(
-            String storagePath, String remotePath, String mimeType, String requiredEtag
+            String storagePath, String remotePath, String mimeType, String requiredEtag,
+            String fileLastModifTimestamp
     ){
-		 super(storagePath, remotePath, mimeType, requiredEtag);
+		 super(storagePath, remotePath, mimeType, requiredEtag, fileLastModifTimestamp);
 	}
     
     @Override
@@ -97,12 +102,23 @@ public class ChunkedUploadRemoteFileOperation extends UploadRemoteFileOperation 
                 mPutMethod.addRequestHeader(OC_CHUNKED_HEADER, OC_CHUNKED_HEADER);
                 mPutMethod.addRequestHeader(OC_CHUNK_SIZE_HEADER, chunkSizeStr);
                 mPutMethod.addRequestHeader(OC_TOTAL_LENGTH_HEADER, totalLengthStr);
+
+                mPutMethod.addRequestHeader(OC_CHUNK_X_OC_MTIME_HEADER, mFileLastModifTimestamp);
+
                 ((ChunkFromFileChannelRequestEntity) mEntity).setOffset(offset);
                 mPutMethod.setRequestEntity(mEntity);
                 if (mCancellationRequested.get()) {
                     mPutMethod.abort();
                     // next method will throw an exception
                 }
+
+                if (chunkIndex == chunkCount - 1) {
+                    // Added a high timeout to the last chunk due to when the last chunk
+                    // arrives to the server with the last PUT, all chunks get assembled
+                    // within that PHP request, so last one takes longer.
+                    mPutMethod.getParams().setSoTimeout(LAST_CHUNK_TIMEOUT);
+                }
+
                 status = client.executeMethod(mPutMethod);
 
                 if (status == 400) {

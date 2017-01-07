@@ -1,5 +1,5 @@
 /* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -154,10 +154,15 @@ public class MainActivity extends Activity implements OnRemoteOperationListener,
     
     private void startUpload() {
     	File upFolder = new File(getCacheDir(), getString(R.string.upload_folder_path));
-    	File fileToUpload = upFolder.listFiles()[0]; 
+    	File fileToUpload = upFolder.listFiles()[0];
     	String remotePath = FileUtils.PATH_SEPARATOR + fileToUpload.getName(); 
     	String mimeType = getString(R.string.sample_file_mimetype);
-    	UploadRemoteFileOperation uploadOperation = new UploadRemoteFileOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType);
+
+		// Get the last modification date of the file from the file system
+		Long timeStampLong = fileToUpload.lastModified()/1000;
+		String timeStamp = timeStampLong.toString();
+
+    	UploadRemoteFileOperation uploadOperation = new UploadRemoteFileOperation(fileToUpload.getAbsolutePath(), remotePath, mimeType, timeStamp);
     	uploadOperation.addDatatransferProgressListener(this);
     	uploadOperation.execute(mClient, this, mHandler);
     }

@@ -1,5 +1,5 @@
 /* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -73,7 +73,7 @@ public class GetRemoteUserInfoOperation extends RemoteOperation {
             status = client.executeMethod(get);
             if (isSuccess(status)) {
                 String response = get.getResponseBodyAsString();
-                Log_OC.d(TAG, "Successful response: " + response);
+                Log_OC.d(TAG, "Successful response");
 
                 // Parse the response
                 JSONObject respJSON = new JSONObject(response);

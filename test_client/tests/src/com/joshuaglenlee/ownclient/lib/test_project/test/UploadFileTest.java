@@ -1,5 +1,5 @@
 /* ownCloud Android Library is available under MIT license
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *   
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ public class UploadFileTest extends RemoteTest {
 	 * Test Upload File without chunks
 	 */
 	public void testUploadFile() {
-		
+
 		String fullPath2Upload = mBaseFolderPath + UPLOAD_PATH;
 		RemoteOperationResult result = mActivity.uploadFile(
 				mFileToUpload.getAbsolutePath(), 
@@ -121,5 +121,4 @@ public class UploadFileTest extends RemoteTest {
 		}
 		super.tearDown();
 	}
-	
 }
