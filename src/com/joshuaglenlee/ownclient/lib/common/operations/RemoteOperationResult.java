@@ -1,22 +1,22 @@
 /* ownCloud Android Library is available under MIT license
  *   Copyright (C) 2016 ownCloud GmbH.
- *   
+ *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *   of this software and associated documentation files (the "Software"), to deal
  *   in the Software without restriction, including without limitation the rights
  *   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *   copies of the Software, and to permit persons to whom the Software is
  *   furnished to do so, subject to the following conditions:
- *   
+ *
  *   The above copyright notice and this permission notice shall be included in
  *   all copies or substantial portions of the Software.
- *   
- *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+ *
+ *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
- *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
- *   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN 
- *   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ *   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ *   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  *   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  *
@@ -34,6 +34,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
 import android.accounts.Account;
 import android.accounts.AccountsException;
 
@@ -44,6 +45,7 @@ import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.jackrabbit.webdav.DavException;
 import org.json.JSONException;
@@ -61,8 +63,10 @@ import javax.net.ssl.SSLException;
  */
 public class RemoteOperationResult implements Serializable {
 
-	/** Generated - should be refreshed every time the class changes!! */;
-    private static final long serialVersionUID = 1129130415603799707L;
+    /**
+     * Generated - should be refreshed every time the class changes!!
+     */
+    private static final long serialVersionUID = 4968939884332372230L;
 
     private static final String TAG = RemoteOperationResult.class.getSimpleName();
 
@@ -100,23 +104,27 @@ public class RemoteOperationResult implements Serializable {
         ACCOUNT_NOT_THE_SAME,
         INVALID_CHARACTER_IN_NAME,
         SHARE_NOT_FOUND,
-		LOCAL_STORAGE_NOT_REMOVED,
-		FORBIDDEN,
-		SHARE_FORBIDDEN,
-		OK_REDIRECT_TO_NON_SECURE_CONNECTION, 
-		INVALID_MOVE_INTO_DESCENDANT,
+        LOCAL_STORAGE_NOT_REMOVED,
+        FORBIDDEN,
+        SHARE_FORBIDDEN,
+        SPECIFIC_FORBIDDEN,
+        OK_REDIRECT_TO_NON_SECURE_CONNECTION,
+        INVALID_MOVE_INTO_DESCENDANT,
         INVALID_COPY_INTO_DESCENDANT,
-		PARTIAL_MOVE_DONE,
+        PARTIAL_MOVE_DONE,
         PARTIAL_COPY_DONE,
         SHARE_WRONG_PARAMETER,
         WRONG_SERVER_RESPONSE,
         INVALID_CHARACTER_DETECT_IN_SERVER,
         DELAYED_FOR_WIFI,
-        LOCAL_FILE_NOT_FOUND
+        LOCAL_FILE_NOT_FOUND,
+        SERVICE_UNAVAILABLE,
+        SPECIFIC_SERVICE_UNAVAILABLE
     }
 
     private boolean mSuccess = false;
     private int mHttpCode = -1;
+    private String mHttpPhrase = null;
     private Exception mException = null;
     private ResultCode mCode = ResultCode.UNKNOWN_ERROR;
     private String mRedirectedLocation;
@@ -125,101 +133,30 @@ public class RemoteOperationResult implements Serializable {
 
     private ArrayList<Object> mData;
 
+    /**
+     * Public constructor from result code.
+     * <p>
+     * To be used when the caller takes the responsibility of interpreting the result of a {@link RemoteOperation}
+     *
+     * @param code {@link ResultCode} decided by the caller.
+     */
     public RemoteOperationResult(ResultCode code) {
         mCode = code;
-		mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL ||
+        mSuccess = (code == ResultCode.OK || code == ResultCode.OK_SSL ||
                 code == ResultCode.OK_NO_SSL ||
                 code == ResultCode.OK_REDIRECT_TO_NON_SECURE_CONNECTION);
         mData = null;
     }
 
-    private RemoteOperationResult(boolean success, int httpCode) {
-        mSuccess = success;
-        mHttpCode = httpCode;
-
-        if (success) {
-            mCode = ResultCode.OK;
-
-        } else if (httpCode > 0) {
-            switch (httpCode) {
-            case HttpStatus.SC_UNAUTHORIZED:
-                mCode = ResultCode.UNAUTHORIZED;
-                break;
-            case HttpStatus.SC_NOT_FOUND:
-                mCode = ResultCode.FILE_NOT_FOUND;
-                break;
-            case HttpStatus.SC_INTERNAL_SERVER_ERROR:
-                mCode = ResultCode.INSTANCE_NOT_CONFIGURED;
-                break;
-            case HttpStatus.SC_CONFLICT:
-                mCode = ResultCode.CONFLICT;
-                break;
-            case HttpStatus.SC_INSUFFICIENT_STORAGE:
-                mCode = ResultCode.QUOTA_EXCEEDED;
-                break;
-			case HttpStatus.SC_FORBIDDEN:
-				mCode = ResultCode.FORBIDDEN;
-                break;
-            default:
-                mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " +
-                        httpCode);
-            }
-        }
-    }
-
-    public RemoteOperationResult(boolean success, int httpCode, Header[] headers) {
-        this(success, httpCode);
-        if (headers != null) {
-            Header current;
-            for (int i = 0; i < headers.length; i++) {
-                current = headers[i];
-                if ("location".equals(current.getName().toLowerCase())) {
-                    mRedirectedLocation = current.getValue();
-                    continue;
-                }
-                if ("www-authenticate".equals(current.getName().toLowerCase())) {
-                    mAuthenticate = current.getValue();
-                    continue;
-                }
-            }
-        }
-        if (isIdPRedirection()) {
-            mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
-        }
-    }
-
-    public RemoteOperationResult(boolean success, String bodyResponse, int httpCode) {
-        mSuccess = success;
-        mHttpCode = httpCode;
-
-        if (success) {
-            mCode = ResultCode.OK;
-
-        } else if (httpCode > 0) {
-            switch (httpCode) {
-                case HttpStatus.SC_BAD_REQUEST:
-
-                    InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
-                    InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
-                    try {
-                        if (xmlParser.parseXMLResponse(is))
-                            mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
-
-                    } catch (Exception e) {
-                        mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                        Log_OC.e(TAG, "Exception reading exception from server", e);
-                    }
-                    break;
-                default:
-                    mCode = ResultCode.UNHANDLED_HTTP_CODE;
-                    Log_OC.d(TAG, "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " +
-                            httpCode);
-            }
-        }
-
-    }
-
+    /**
+     * Public constructor from exception.
+     * <p>
+     * To be used when an exception prevented the end of the {@link RemoteOperation}.
+     * <p>
+     * Determines a {@link ResultCode} depending on the type of the exception.
+     *
+     * @param e Exception that interrupted the {@link RemoteOperation}
+     */
     public RemoteOperationResult(Exception e) {
         mException = e;
 
@@ -270,6 +207,171 @@ public class RemoteOperationResult implements Serializable {
 
     }
 
+    /**
+     * Public constructor from separate elements of an HTTP or DAV response.
+     * <p>
+     * To be used when the result needs to be interpreted from the response of an HTTP/DAV method.
+     * <p>
+     * Determines a {@link ResultCode} from the already executed method received as a parameter. Generally,
+     * will depend on the HTTP code and HTTP response headers received. In some cases will inspect also the
+     * response body.
+     *
+     * @param success    The operation was considered successful or not.
+     * @param httpMethod HTTP/DAV method already executed which response will be examined to interpret the
+     *                   result.
+     */
+    public RemoteOperationResult(boolean success, HttpMethod httpMethod) throws IOException {
+        this(
+                success,
+                httpMethod.getStatusCode(),
+                httpMethod.getStatusText(),
+                httpMethod.getResponseHeaders()
+        );
+
+        if (mHttpCode == HttpStatus.SC_BAD_REQUEST) {   // 400
+            String bodyResponse = httpMethod.getResponseBodyAsString();
+            // do not get for other HTTP codes!; could not be available
+
+            if (bodyResponse != null && bodyResponse.length() > 0) {
+                InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                InvalidCharacterExceptionParser xmlParser = new InvalidCharacterExceptionParser();
+                try {
+                    if (xmlParser.parseXMLResponse(is)) {
+                        mCode = ResultCode.INVALID_CHARACTER_DETECT_IN_SERVER;
+                    }
+
+                } catch (Exception e) {
+                    Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
+                    // mCode stays as set in this(success, httpCode, headers)
+                }
+            }
+        }
+
+        if (mHttpCode == HttpStatus.SC_FORBIDDEN) {
+            String bodyResponse = httpMethod.getResponseBodyAsString();
+
+            if (bodyResponse != null && bodyResponse.length() > 0) {
+                InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                ErrorMessageParser xmlParser = new ErrorMessageParser();
+                try {
+                    String errorMessage = xmlParser.parseXMLResponse(is);
+                    if (errorMessage != null && errorMessage != "") {
+                        mCode = ResultCode.SPECIFIC_FORBIDDEN;
+                        mHttpPhrase = errorMessage;
+                    }
+                } catch (Exception e) {
+                    Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
+                    // mCode stays as set in this(success, httpCode, headers)
+                }
+            }
+        }
+
+        if (mHttpCode == HttpStatus.SC_SERVICE_UNAVAILABLE) {
+            String bodyResponse = httpMethod.getResponseBodyAsString();
+
+            if (bodyResponse != null && bodyResponse.length() > 0) {
+                InputStream is = new ByteArrayInputStream(bodyResponse.getBytes());
+                ErrorMessageParser xmlParser = new ErrorMessageParser();
+                try {
+                    String errorMessage = xmlParser.parseXMLResponse(is);
+                    if (errorMessage != "" && errorMessage != null) {
+                        mCode = ResultCode.SPECIFIC_SERVICE_UNAVAILABLE;
+                        mHttpPhrase = errorMessage;
+                    }
+                } catch (Exception e) {
+                    Log_OC.w(TAG, "Error reading exception from server: " + e.getMessage());
+                    // mCode stays as set in this(success, httpCode, headers)
+                }
+            }
+        }
+    }
+
+    /**
+     * Public constructor from separate elements of an HTTP or DAV response.
+     * <p>
+     * To be used when the result needs to be interpreted from HTTP response elements that could come from
+     * different requests (WARNING: black magic, try to avoid).
+     * <p>
+     * If all the fields come from the same HTTP/DAV response, {@link #RemoteOperationResult(boolean, HttpMethod)}
+     * should be used instead.
+     * <p>
+     * Determines a {@link ResultCode} depending on the HTTP code and HTTP response headers received.
+     *
+     * @param success     The operation was considered successful or not.
+     * @param httpCode    HTTP status code returned by an HTTP/DAV method.
+     * @param httpPhrase  HTTP status line phrase returned by an HTTP/DAV method
+     * @param httpHeaders HTTP response header returned by an HTTP/DAV method
+     */
+    public RemoteOperationResult(boolean success, int httpCode, String httpPhrase, Header[] httpHeaders) {
+        this(success, httpCode, httpPhrase);
+        if (httpHeaders != null) {
+            Header current;
+            for (Header httpHeader : httpHeaders) {
+                current = httpHeader;
+                if ("location".equals(current.getName().toLowerCase())) {
+                    mRedirectedLocation = current.getValue();
+                    continue;
+                }
+                if ("www-authenticate".equals(current.getName().toLowerCase())) {
+                    mAuthenticate = current.getValue();
+                    break;
+                }
+            }
+        }
+        if (isIdPRedirection()) {
+            mCode = ResultCode.UNAUTHORIZED;    // overrides default ResultCode.UNKNOWN
+        }
+    }
+
+    /**
+     * Private constructor for results built interpreting a HTTP or DAV response.
+     *
+     * Determines a {@link ResultCode} depending of the type of the exception.
+     *
+     * @param success    Operation was successful or not.
+     * @param httpCode   HTTP status code returned by the HTTP/DAV method.
+     * @param httpPhrase HTTP status line phrase returned by the HTTP/DAV method
+     */
+    private RemoteOperationResult(boolean success, int httpCode, String httpPhrase) {
+        mSuccess = success;
+        mHttpCode = httpCode;
+        mHttpPhrase = httpPhrase;
+
+        if (success) {
+            mCode = ResultCode.OK;
+
+        } else if (httpCode > 0) {
+            switch (httpCode) {
+                case HttpStatus.SC_UNAUTHORIZED:                    // 401
+                    mCode = ResultCode.UNAUTHORIZED;
+                    break;
+                case HttpStatus.SC_FORBIDDEN:                       // 403
+                    mCode = ResultCode.FORBIDDEN;
+                    break;
+                case HttpStatus.SC_NOT_FOUND:                       // 404
+                    mCode = ResultCode.FILE_NOT_FOUND;
+                    break;
+                case HttpStatus.SC_CONFLICT:                        // 409
+                    mCode = ResultCode.CONFLICT;
+                    break;
+                case HttpStatus.SC_INTERNAL_SERVER_ERROR:           // 500
+                    mCode = ResultCode.INSTANCE_NOT_CONFIGURED;     // assuming too much...
+                    break;
+                case HttpStatus.SC_SERVICE_UNAVAILABLE:             // 503
+                    mCode = ResultCode.SERVICE_UNAVAILABLE;
+                    break;
+                case HttpStatus.SC_INSUFFICIENT_STORAGE:            // 507
+                    mCode = ResultCode.QUOTA_EXCEEDED;              // surprise!
+                    break;
+                default:
+                    mCode = ResultCode.UNHANDLED_HTTP_CODE;         // UNKNOWN ERROR
+                    Log_OC.d(TAG,
+                            "RemoteOperationResult has processed UNHANDLED_HTTP_CODE: " +
+                                    mHttpCode + " " + mHttpPhrase
+                    );
+            }
+        }
+    }
 
     public void setData(ArrayList<Object> files) {
         mData = files;
@@ -289,6 +391,10 @@ public class RemoteOperationResult implements Serializable {
 
     public int getHttpCode() {
         return mHttpCode;
+    }
+
+    public String getHttpPhrase() {
+        return mHttpPhrase;
     }
 
     public ResultCode getCode() {
@@ -366,10 +472,10 @@ public class RemoteOperationResult implements Serializable {
 
             } else if (mException instanceof AccountNotFoundException) {
                 Account failedAccount =
-                        ((AccountNotFoundException)mException).getFailedAccount();
+                        ((AccountNotFoundException) mException).getFailedAccount();
                 return mException.getMessage() + " (" +
                         (failedAccount != null ? failedAccount.name : "NULL") + ")";
-                
+
             } else if (mException instanceof AccountsException) {
                 return "Exception while using account";
 
@@ -403,12 +509,12 @@ public class RemoteOperationResult implements Serializable {
             return "Authenticated with a different account than the one updating";
 
         } else if (mCode == ResultCode.INVALID_CHARACTER_IN_NAME) {
-                return "The file name contains an forbidden character";
+            return "The file name contains an forbidden character";
 
         } else if (mCode == ResultCode.FILE_NOT_FOUND) {
-	  	    return "Local file does not exist";
+            return "Local file does not exist";
 
- 	    } else if (mCode == ResultCode.SYNC_CONFLICT) {
+        } else if (mCode == ResultCode.SYNC_CONFLICT) {
             return "Synchronization conflict";
         }
 
