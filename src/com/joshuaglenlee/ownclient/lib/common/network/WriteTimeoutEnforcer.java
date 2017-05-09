@@ -22,9 +22,9 @@
  *
  */
 
-package com.owncloud.android.lib.common.network;
+package com.joshuaglenlee.ownclient.lib.common.network;
 
-import com.owncloud.android.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
