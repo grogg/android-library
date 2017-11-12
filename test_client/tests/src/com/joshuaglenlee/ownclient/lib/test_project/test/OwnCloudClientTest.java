@@ -43,9 +43,9 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
-import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentials;
-import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentials;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.common.network.NetworkUtils;
 import com.joshuaglenlee.ownclient.lib.test_project.R;
 import com.joshuaglenlee.ownclient.lib.test_project.SelfSignedConfidentSslSocketFactory;
@@ -130,7 +130,7 @@ public class OwnCloudClientTest extends AndroidTestCase {
 		client.setCredentials(credentials);
 		assertEquals("Basic credentials not set", credentials, client.getCredentials());
 		
-		credentials = OwnCloudCredentialsFactory.newBearerCredentials("bearerToken");
+		credentials = OwnCloudCredentialsFactory.newBearerCredentials("user", "bearerToken");
 		client.setCredentials(credentials);
 		assertEquals("Bearer credentials not set", credentials, client.getCredentials());
 
@@ -294,10 +294,10 @@ public class OwnCloudClientTest extends AndroidTestCase {
 	public void testGetWebdavUri() {
 		OwnCloudClient client = 
 				new OwnCloudClient(mServerUri, NetworkUtils.getMultiThreadedConnManager());
-		client.setCredentials(OwnCloudCredentialsFactory.newBearerCredentials("fakeToken"));
+		client.setCredentials(OwnCloudCredentialsFactory.newBearerCredentials("user", "fakeToken"));
 		Uri webdavUri = client.getWebdavUri();
 		assertTrue("WebDAV URI does not point to the right entry point",
-				webdavUri.getPath().endsWith(AccountUtils.WEBDAV_PATH_4_0));
+				webdavUri.getPath().endsWith(OwnCloudClient.WEBDAV_PATH_4_0));
 		assertTrue("WebDAV URI is not a subpath of base URI", 
 				webdavUri.getAuthority().equals(mServerUri.getAuthority()) &&
 				webdavUri.getPath().startsWith(mServerUri.getPath()));
@@ -306,7 +306,7 @@ public class OwnCloudClientTest extends AndroidTestCase {
 				mUsername, mPassword));
 		webdavUri = client.getWebdavUri();
 		assertTrue("WebDAV URI does not point to the right entry point",
-				webdavUri.getPath().endsWith(AccountUtils.WEBDAV_PATH_4_0));
+				webdavUri.getPath().endsWith(OwnCloudClient.WEBDAV_PATH_4_0));
 		PropFindMethod propfind = null;
 		try {
 			propfind = new PropFindMethod(webdavUri + "/",

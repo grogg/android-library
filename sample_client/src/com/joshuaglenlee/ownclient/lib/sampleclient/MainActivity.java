@@ -35,7 +35,7 @@ import java.util.List;
 import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressListener;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientFactory;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
-import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.common.operations.OnRemoteOperationListener;
 import com.joshuaglenlee.ownclient.lib.resources.files.RemoteFile;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;

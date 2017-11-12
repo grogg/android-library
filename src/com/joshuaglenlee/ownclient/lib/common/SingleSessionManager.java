@@ -40,6 +40,7 @@ import android.util.Log;
 
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils.AccountNotFoundException;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentials;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
 /**
@@ -115,8 +116,11 @@ public class SingleSessionManager implements OwnCloudClientManager {
                 context.getApplicationContext(),
                 true);    // TODO remove dependency on OwnCloudClientFactory
             client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-            // enable cookie tracking
+            client.setAccount(account);
+            client.setContext(context);
+            client.setOwnCloudClientManager(this);
 
+            // enable cookie tracking
             AccountUtils.restoreCookies(account.getSavedAccount(), client, context);
 
             account.loadCredentials(context);

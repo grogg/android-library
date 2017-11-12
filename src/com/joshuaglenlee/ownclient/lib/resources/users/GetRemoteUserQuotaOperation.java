@@ -28,7 +28,7 @@
 package com.joshuaglenlee.ownclient.lib.resources.users;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
-import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentials;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentials;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;

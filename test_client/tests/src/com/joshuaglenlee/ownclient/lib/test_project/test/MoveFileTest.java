@@ -35,7 +35,7 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientFactory;
-import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.common.network.NetworkUtils;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;

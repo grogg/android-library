@@ -33,8 +33,8 @@ import android.test.AndroidTestCase;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudAccount;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
-import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.common.SimpleFactoryManager;
+import com.joshuaglenlee.ownclient.lib.common.authentication.OwnCloudCredentialsFactory;
 import com.joshuaglenlee.ownclient.lib.test_project.R;
 import com.joshuaglenlee.ownclient.lib.test_project.SelfSignedConfidentSslSocketFactory;
 
